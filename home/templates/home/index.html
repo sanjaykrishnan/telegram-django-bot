@@ -1,0 +1,100 @@
+<html>
+    <head>
+        <style>
+            #customers {
+              font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            #customers td, #customers th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+
+            #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+            #customers tr:hover {background-color: #ddd;}
+
+            #customers th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #4CAF50;
+              color: white;
+            }
+            </style>
+    </head>
+<script>
+    let socket = new WebSocket('ws://localhost:8000/ws/tableData/');
+    socket.onopen = function(e){
+        console.log('Connection established');
+    };
+
+    socket.onmessage = function(e){
+        console.log(e['data']);
+        var recData = JSON.parse(e.data);
+        if (recData['username'] in tableBodyData){
+        tableBodyData[recData['username']]['username']=recData['username'];
+        tableBodyData[recData['username']]['stupid']=recData['stupid'];
+        tableBodyData[recData['username']]['fat']=recData['fat'];
+        tableBodyData[recData['username']]['dumb']=recData['dumb'];
+        }
+        else {
+        tableBodyData[recData.username] = JSON.parse('{"username":"'+recData.username+'","stupid":'+recData.stupid+',"fat":'+recData.fat+', "dumb":'+recData.dumb+'}');
+        }
+        tableContent=document.getElementById("customers");
+        tableContent.innerHTML = "";
+        createHeader(tableContent,tableheader);
+        createtableBody(tableContent,tableBodyData)
+
+    };
+
+    socket.onclose= function(e){
+        console.log('Connection closed');
+    };
+</script>
+
+    <body>
+        <h1>Real-time Table</h1>
+        <table id="customers">
+
+        </table>
+    </body>
+    <script>
+        let tableheader = {{tableheader | safe}};
+        let tableBodyData= {{data | safe}};
+        console.log(tableBodyData);
+        console.log("sanjaykrish" in tableBodyData);
+        console.log("sssss" in tableBodyData);
+        console.log(tableBodyData);
+        function createHeader(table,headervalues){
+            let tHead = table.createTHead();
+            let trow = tHead.insertRow();
+            for (val in headervalues){
+                // console.log(headervalues[val]);
+                let th =document.createElement('th');
+                let text = document.createTextNode(headervalues[val]);
+                th.appendChild(text);
+                trow.appendChild(th);
+            }
+        }
+
+        function createtableBody(table,data){
+            for (element in data){
+                let row = table.insertRow();
+                for (key in data[element]){
+                    let cell = row.insertCell();
+                    let text = document.createTextNode(data[element][key]);
+                    cell.appendChild(text);
+                }
+            }
+        }
+
+        var tableContent = document.getElementById('customers');
+        createHeader(tableContent,tableheader);
+        createtableBody(tableContent,tableBodyData);
+
+
+    </script>
+</html>

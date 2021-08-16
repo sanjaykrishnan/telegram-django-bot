@@ -1,0 +1,4 @@
+Django==3.2.6
+python-telegram-bot==13.7
+channels==3.0.4
+websocket-client==1.2.1
