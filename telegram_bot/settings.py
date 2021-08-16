@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -75,12 +75,24 @@ WSGI_APPLICATION = 'telegram_bot.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'default': {
+            'ENGINE': os.environ.get('DB_ENGINE_VAL', 'django.db.backends.postgresql'),
+            'NAME': os.environ.get('DB_NAME_VAL', 'tg_bot'),
+            'USER': os.environ.get('DB_USER_VAL', 'root'),
+            'PASSWORD': os.environ.get('DB_PWD_VAL', 'root'),
+            'HOST': os.environ.get('DB_HOST_VAL', 'localhost'),
+            'PORT': os.environ.get('DB_PORT_VAL', ''),
+        },
 }
+
 
 
 # Password validation
@@ -131,6 +143,5 @@ ASGI_APPLICATION = "telegram_bot.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
-        # "ROUTING": "telegram_bot.routing.ws_pattern",
     },
 }

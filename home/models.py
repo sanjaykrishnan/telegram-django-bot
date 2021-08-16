@@ -10,6 +10,8 @@ class ChatUserData(models.Model):
     stupid = models.PositiveIntegerField(default=0)
     fat = models.PositiveIntegerField(default=0)
     dumb = models.PositiveIntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.username
