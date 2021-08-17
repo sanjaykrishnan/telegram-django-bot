@@ -37,7 +37,8 @@ def show_options(update, context):
 
 
 def update_db_record(user_obj, message):
-    user = ChatUserData.objects.filter(username=user_obj.username).first()
+    username = user_obj.username if user_obj.username else str(user_obj.id)
+    user = ChatUserData.objects.filter(username=username).first()
     if user:
         if message == 'fat':
             user.fat += 1
@@ -50,9 +51,9 @@ def update_db_record(user_obj, message):
         fat = 1 if message == 'fat' else 0
         stupid = 1 if message == 'stupid' else 0
         dumb = 1 if message == 'dumb' else 0
-        ChatUserData.objects.create(username=user_obj.username, first_name=user_obj.first_name,
+        ChatUserData.objects.create(username=username, first_name=user_obj.first_name,
                                     last_name=user_obj.last_name, fat=fat, stupid=stupid, dumb=dumb)
-    send_ws_data(user_obj.username)
+    send_ws_data(username)
 
 
 def send_ws_data(username):
